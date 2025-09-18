@@ -1,0 +1,47 @@
+import streamlit as st
+import requests
+import pandas as pd
+
+API_URL = "http://localhost:8000"
+API_KEY = "demo-key"
+
+st.title("Power BI Integration Agent Demo")
+
+st.header("Ask a Business Question (NL→SQL)")
+question = st.text_input("Business question (e.g., 'Show monthly failures by machine')")
+if st.button("Run Query"):
+    resp = requests.post(f"{API_URL}/powerbi/query", json={"question": question}, headers={"X-API-Key": API_KEY})
+    if resp.ok:
+        data = resp.json()
+        st.write(f"**SQL:** `{data['sql']}`")
+        st.write(f"**Rationale:** {data['rationale']}")
+        st.write(f"**Visualization Hints:** {', '.join(data['viz_hints'])}")
+        df = pd.DataFrame(data['rows'])
+        st.dataframe(df)
+    else:
+        st.error(resp.text)
+
+st.header("Export Data for Power BI")
+export_fmt = st.selectbox("Format", ["csv", "parquet", "xlsx"])
+if st.button("Export Data"):
+    resp = requests.post(f"{API_URL}/export", json={"question": question, "format": export_fmt}, headers={"X-API-Key": API_KEY})
+    if resp.ok:
+        data = resp.json()
+        st.success(f"Exported to {data['path']} ({data['rowcount']} rows)")
+    else:
+        st.error(resp.text)
+
+st.header("Refresh Exported Data")
+export_id = st.text_input("Export job id/name (not implemented in demo)")
+if st.button("Refresh Export"):
+    resp = requests.post(f"{API_URL}/refresh", json={"export_id": export_id}, headers={"X-API-Key": API_KEY})
+    if resp.ok:
+        data = resp.json()
+        st.success(f"Refreshed {data['path']} ({data['rowcount']} rows)")
+    else:
+        st.error(resp.text)
+
+st.header("API Docs & Power BI Integration Guide")
+st.markdown("""
+See [docs/powerbi.md](../docs/powerbi.md) for step-by-step instructions, M code, and curl examples.
+""")

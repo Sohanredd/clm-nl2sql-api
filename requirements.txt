@@ -1,3 +1,20 @@
-duckdb
+# Professional requirements.txt for FCLM_Demo
+# Restore requirements.txt to minimal, unpinned versions for maximum compatibility and to help app.py run without version conflicts
+streamlit
 pandas
+duckdb
 matplotlib
+seaborn
+plotly
+altair
+requests
+rich
+fastapi
+uvicorn
+pydantic
+python-dotenv
+sqlalchemy
+diskcache
+tenacity
+anthropic
+numpy
