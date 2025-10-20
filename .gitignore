@@ -1,0 +1,23 @@
+# environment & secrets
+*.env
+ask_data/.env
+config/secret_key
+
+# databases & caches
+db/*.duckdb
+.askdata_cache/
+ask_data/src/.askdata_cache/
+config/codex.sqlite3*
+config/cache/
+config/logs/
+
+# virtual env and python artifacts
+.venv/
+__pycache__/
+*.pyc
+
+# outputs (optional)
+outputs/
+
+# IDE
+.DS_Store
